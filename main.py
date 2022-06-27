@@ -148,7 +148,7 @@ if __name__=="__main__":
         command = recognize_input
         command_options = [str(input_part) for input_part in recognize_input[1:len(recognize_input)]]
         if command in commands.key:
-            commands[key](*args)
+            commands[commands.key](*args)
             user_text.setText(command)
         else:
             continue
