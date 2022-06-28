@@ -5,150 +5,156 @@ import speech_recognition as sr
 import pyaudio
 import os
 import webbrowser
-from subprocess import call
+from urllib.parse import quote_plus
 
 
-
-### Определение переменных
-r = sr.Recognizer()
-m = sr.Microphone(device_index=0)
+# Определение переменных
 
 
-### Основная функция, запуск UI
+# Основная функция, запуск UI
 def UI():
     app = QApplication(sys.argv)
     global window
     window = QMainWindow()
     window.setWindowTitle("Speech Assistant - Wait...")
-    window.setGeometry(300,300,400,300)
+    window.setGeometry(300, 300, 400, 300)
 
     main_text = QLabel(window)
     main_text.setText("Your Command: ")
-    main_text.move(10,200)
+    main_text.move(10, 200)
     main_text.setFixedWidth(100)
 
     global user_text
     user_text = QLabel(window)
     user_text.setText("")
-    user_text.move(110,200)
+    user_text.move(110, 200)
 
-
-    global butt 
+    global butt
     butt = QPushButton("Record", window)
     butt.setText("Record")
-    butt.resize(350,100)
-    butt.move(25,25)
-    butt.clicked.connect(progchange and record)
+    butt.resize(350, 100)
+    butt.move(25, 25)
+    butt.clicked.connect(progchange)
     window.show()
     app.exec()
-    
 
 
-### Изменение UI
+# Изменение UI
 def progchange():
     butt.setText("Recording...")
     butt.setEnabled(False)
     window.setWindowTitle("Speech Assistant - Process...")
+    work()
 
 
-
-### Запись
-def record(*args: tuple):
+# Запись
+def record():
     with m as source:
         global recognized_data
         recognized_data = ""
-        r.adjust_for_ambient_noise(m, duration=2)
+        r.adjust_for_ambient_noise(m, duration=4)
         try:
-            audio = r.listen(source, phrase_time_limit=5, timeout=5)
+            audio = r.listen(source, phrase_time_limit=7, timeout=1)
             recognized_data = r.recognize_google(audio, language="ru").lower()
-            print(recognized_data)
-        except(sr.WaitTimeoutError,sr.UnknownValueError):
+        except(sr.WaitTimeoutError, sr.UnknownValueError):
             pass
-        except (sr.RequestError):
-            user_text.setText("!!Check Internet Connetion!!")
         else:
             return recognized_data
 
 
-def get_google(*args: tuple):
+def get_google(ri, *command: list):
     """
     Поиск видео на YouTube с автоматическим открытием ссылки на список результатов
     :param args: фраза поискового запроса
     """
-    if not args[0]: return
-    search_term = " ".join(args[0])
-    url = "https://www.google.com/search?q=" + search_term
+    a = ' '.join(command)
+    url = "https://www.google.com/search?q=" + quote_plus(a)
     webbrowser.get().open(url)
+    print(f"Ваша команда: %s" % ri)
 
 
-def open_finder():
-    targetDirectory = "~/Desktop"
-    call(["open", targetDirectory])
+def open_finder(ri, *command: list):
+    os.chdir('/Users/wasd64/')
+    os.system("open `pwd`")
+    print(f"Ваша команда: %s" % ri)
 
 
-def turnon_wifi():
+def turnon_wifi(ri, *command: list):
     os.system("networksetup -setairportpower airport on")
+    print(f"Ваша команда: %s" % ri)
 
-def turnoff_wifi():
+
+def turnoff_wifi(ri, *command: list):
     os.system("networksetup -setairportpower airport off")
-
-def open_sysmon():
-    os.system("/System/Applications/Utilities/Activity\ Monitor.app/Contents/MacOS/Activity\ Monitor ; exit;")
-
-def open_settings():
-    os.system("/System/Applications/System\ Preferences.app/Contents/MacOS/System\ Preferences ; exit;")
+    print(f"Ваша команда: %s" % ri)
 
 
-def stop():
+def open_sysmon(ri, *command: list):
+    os.system(
+        "/System/Applications/Utilities/Activity\ Monitor.app/Contents/MacOS/Activity\ Monitor ; exit;")
+    print(f"Ваша команда: %s" % ri)
+
+
+def open_settings(ri, *command: list):
+    os.system(
+        "/System/Applications/System\ Preferences.app/Contents/MacOS/System\ Preferences ; exit;")
+    print(f"Ваша команда: %s" % ri)
+
+
+def stop(ri, *command: list):
+    print(f"Ваша команда: %s" % ri)
     sys.exit()
 
-# def get_sum():
-#     d
+
+def get_sum(ri, *command: list):
+    a=0
+    for x in range(len(command)):
+        try:
+            a+=int(command[x])
+        except:
+            pass
+    print(f"Ваша команда: %s" % ri)
+    print(f"Результат: %a" % a)
 
 
-
-
-### Команды 
+# Команды
 commands = {
-    ("открой проводник", "открой файндер", "запусти проводник"): open_finder,
-    ("выключи вайфай", "выключи вифи"): turnoff_wifi,
-    ("включи вайфай", "включи вифи"): turnon_wifi,
+    ("открой проводник", "открой финдер", "запустить проводник", "открыть проводник"): open_finder,
     ("открой диспетчер задач", "открой мониторинг ресурсов", "запусти диспетчер задач", "запусти мониторинг ресурсов"): open_sysmon,
     ("открой настройки системы", "открой настройки", "настройки"): open_settings,
     ("найди в интернете", "поиск в интернете"): get_google,
-    # ("сложи", "прибавь"): get_sum,
+    ("сложи", "прибавь"): get_sum,
     ("завершение", "выход"): stop
 }
 
 
-### Поиск команды из записи в словаре
-# def execute_command_with_name(command_name: str, *args: list):
-#     """
-#     Выполнение заданной пользователем команды с дополнительными аргументами
-#     :param command_name: название команды
-#     :param args: аргументы, которые будут переданы в функцию
-#     :return:
-#     """
-#     for key in commands.keys():
-#         if command_name in key:
-#             commands[key](*args)
-#             user_text.setText(command_name)
-#         else:
-#             pass
-
-
-### Запуск программы
-if __name__=="__main__":
-    UI()
+def work():
+    global r
+    global m
+    r = sr.Recognizer()
+    m = sr.Microphone(device_index=2)
     while True:
-        recognize_input = record()
-        # отделение комманд от дополнительной информации (аргументов)
-        # recognize_input = recognize_input.split(" ")
-        print(recognize_input)
-        command = recognize_input
-        command_options = [str(input_part) for input_part in recognize_input[1:len(recognize_input)]]
-        if command in commands.key:
-            commands[commands.key](*args)
-            user_text.setText(command)
-        else:
-            continue
+        global ri
+        ri = record()
+        if type(ri) != type(None):
+            print(ri)
+            if ri == "выключи wi-fi":
+                turnoff_wifi(ri)
+            elif ri == "включи wi-fi":
+                turnon_wifi(ri)
+            for key in commands.keys():
+                for x in key:
+                    if x in ri:
+                        global comand
+                        command = list(set(tuple(ri.split(" "))) -
+                                       set(tuple(x.split(" "))))
+                        print("COMAND")
+                        print(command)
+                        commands[key](ri, *command)
+            else:
+                continue
+
+
+# Запуск программы
+if __name__ == "__main__":
+    UI()
