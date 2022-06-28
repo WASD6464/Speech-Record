@@ -60,10 +60,6 @@ def record():
 
 ### Поиск
 def get_google(ri, *command: list):
-    """
-    Поиск видео на YouTube с автоматическим открытием ссылки на список результатов
-    :param args: фраза поискового запроса
-    """
     a = ' '.join(command)
     url = "https://www.google.com/search?q=" + quote_plus(a)
     webbrowser.get().open(url)
