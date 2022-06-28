@@ -74,13 +74,13 @@ def open_finder(ri, *command: list):
 
 
 
-### Выключение WI-FI
+### Включение WI-FI
 def turnon_wifi(ri, *command: list):
     os.system("networksetup -setairportpower airport on")
     print(f"Ваша команда: %s" % ri)
 
 
-### Включение WI-FI
+### Выключение WI-FI
 def turnoff_wifi(ri, *command: list):
     os.system("networksetup -setairportpower airport off")
     print(f"Ваша команда: %s" % ri)
