@@ -1,14 +1,10 @@
-from ntpath import join
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel
 import speech_recognition as sr
-import pyaudio
 import os
 import webbrowser
 from urllib.parse import quote_plus
 
-
-# Определение переменных
 
 
 # Основная функция, запуск UI
@@ -62,6 +58,7 @@ def record():
             return recognized_data
 
 
+### Поиск
 def get_google(ri, *command: list):
     """
     Поиск видео на YouTube с автоматическим открытием ссылки на список результатов
@@ -73,39 +70,41 @@ def get_google(ri, *command: list):
     print(f"Ваша команда: %s" % ri)
 
 
+### Открыть проводник
 def open_finder(ri, *command: list):
     os.chdir('/Users/wasd64/')
     os.system("open `pwd`")
     print(f"Ваша команда: %s" % ri)
 
 
+
+### Выключение WI-FI
 def turnon_wifi(ri, *command: list):
     os.system("networksetup -setairportpower airport on")
     print(f"Ваша команда: %s" % ri)
 
 
+### Включение WI-FI
 def turnoff_wifi(ri, *command: list):
     os.system("networksetup -setairportpower airport off")
     print(f"Ваша команда: %s" % ri)
 
 
+### Открыть диспетчер устройств
 def open_sysmon(ri, *command: list):
     os.system(
         "/System/Applications/Utilities/Activity\ Monitor.app/Contents/MacOS/Activity\ Monitor ; exit;")
     print(f"Ваша команда: %s" % ri)
 
 
+### Открыть настройки
 def open_settings(ri, *command: list):
     os.system(
         "/System/Applications/System\ Preferences.app/Contents/MacOS/System\ Preferences ; exit;")
     print(f"Ваша команда: %s" % ri)
 
 
-def stop(ri, *command: list):
-    print(f"Ваша команда: %s" % ri)
-    sys.exit()
-
-
+### Сумма
 def get_sum(ri, *command: list):
     a=0
     for x in range(len(command)):
@@ -115,6 +114,12 @@ def get_sum(ri, *command: list):
             pass
     print(f"Ваша команда: %s" % ri)
     print(f"Результат: %a" % a)
+
+
+### Выход
+def stop(ri, *command: list):
+    print(f"Ваша команда: %s" % ri)
+    sys.exit()
 
 
 # Команды
@@ -127,7 +132,7 @@ commands = {
     ("завершение", "выход"): stop
 }
 
-
+### Основная функция
 def work():
     global r
     global m
@@ -155,6 +160,6 @@ def work():
                 continue
 
 
-# Запуск программы
+### Запуск программы
 if __name__ == "__main__":
     UI()
