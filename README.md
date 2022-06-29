@@ -10,6 +10,10 @@
 
 `https://pypi.org/project/SpeechRecognition/`
 
+Все зависимости присутствуют в файле `requirements.txt`
+
+`pip install -r requirements.txt`
+
 ## Commands
 
 `"открой проводник"`, `"открой финдер"`, `"запустить проводник"`, `"открыть проводник"` - Открытие Finder <br/>
