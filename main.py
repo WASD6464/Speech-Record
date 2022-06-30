@@ -1,3 +1,4 @@
+from email.policy import default
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel
 import speech_recognition as sr
@@ -133,7 +134,7 @@ def work():
     global r
     global m
     r = sr.Recognizer()
-    m = sr.Microphone(device_index=2)
+    m = sr.Microphone()
     while True:
         global ri
         ri = record()
