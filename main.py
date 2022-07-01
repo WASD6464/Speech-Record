@@ -15,16 +15,6 @@ def UI():
     window.setWindowTitle("Speech Assistant - Wait...")
     window.setGeometry(300, 300, 400, 300)
 
-    main_text = QLabel(window)
-    main_text.setText("Your Command: ")
-    main_text.move(10, 200)
-    main_text.setFixedWidth(100)
-
-    global user_text
-    user_text = QLabel(window)
-    user_text.setText("")
-    user_text.move(110, 200)
-
     global butt
     butt = QPushButton("Record", window)
     butt.setText("Record")
@@ -70,13 +60,6 @@ def get_google(ri, *command: list):
 def open_finder(ri, *command: list):
     os.chdir('/Users/wasd64/')
     os.system("open `pwd`")
-    print(f"Ваша команда: %s" % ri)
-
-
-
-### Включение WI-FI
-def turnon_wifi(ri, *command: list):
-    os.system("networksetup -setairportpower airport on")
     print(f"Ваша команда: %s" % ri)
 
 
@@ -141,16 +124,12 @@ def work():
             print(ri)
             if ri == "выключи wi-fi":
                 turnoff_wifi(ri)
-            elif ri == "включи wi-fi":
-                turnon_wifi(ri)
             for key in commands.keys():
                 for x in key:
                     if x in ri:
                         global comand
                         command = list(set(tuple(ri.split(" "))) -
                                        set(tuple(x.split(" "))))
-                        print("COMAND")
-                        print(command)
                         commands[key](ri, *command)
             else:
                 continue
