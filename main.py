@@ -1,4 +1,3 @@
-from email.policy import default
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel
 import speech_recognition as sr
