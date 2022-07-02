@@ -118,10 +118,11 @@ def work():
     r = sr.Recognizer()
     m = sr.Microphone()
     while True:
+        flag = True
         global ri
         ri = record()
         if type(ri) != type(None):
-            print(ri)
+            print(f"Вы сказали: %s"%ri)
             if ri == "выключи wi-fi":
                 turnoff_wifi(ri)
             for key in commands.keys():
@@ -131,8 +132,10 @@ def work():
                         command = list(set(tuple(ri.split(" "))) -
                                        set(tuple(x.split(" "))))
                         commands[key](ri, *command)
-            else:
-                continue
+                        flag = False
+                        break
+        if flag:
+            print("Команда не распознана")
 
 
 ### Запуск программы
